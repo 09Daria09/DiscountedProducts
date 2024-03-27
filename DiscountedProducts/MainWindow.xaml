@@ -1,0 +1,27 @@
+﻿<Window x:Class="DiscountedProducts.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DiscountedProducts"
+        mc:Ignorable="d"
+        Title="Database Interface" Height="600" Width="800" Loaded="Window_Loaded">
+    <DockPanel LastChildFill="True">
+        <Menu x:Name="MainMenu" DockPanel.Dock="Top">
+            <MenuItem  Header="Просмотр">
+                <MenuItem Header="Отображение всех покупателей" x:Name="ShowAllCustomers"/>
+                <MenuItem Header="Отображение email всех покупателей" x:Name="ShowCustomerEmails"/>
+                <MenuItem Header="Отображение списка разделов" x:Name="ShowSections"/>
+                <MenuItem Header="Отображение списка акционных товаров" x:Name="ShowSpecialOffers"/>
+                <MenuItem Header="Отображение всех городов" x:Name="ShowAllCities"/>
+                <MenuItem Header="Отображение всех стран" x:Name="ShowAllCountries"/>
+                <MenuItem Header="Дополнительно">
+                    <MenuItem Header="Покупатели по городу" x:Name="CustomersByCity"/>
+                    <MenuItem Header="Покупатели по стране" x:Name="CustomersByCountry"/>
+                    <MenuItem Header="Акции по стране" x:Name="OffersByCountry"/>
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+        <DataGrid x:Name="dataGrid" Margin="10"/>
+    </DockPanel>
+</Window>

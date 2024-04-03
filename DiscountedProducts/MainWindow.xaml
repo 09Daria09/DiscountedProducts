@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         Title="Database Interface" Height="600" Width="800" Loaded="Window_Loaded">
     <DockPanel LastChildFill="True">
+        
         <Menu x:Name="MainMenu" DockPanel.Dock="Top">
             <MenuItem  Header="Просмотр">
                 <MenuItem Header="Отображение всех покупателей" x:Name="ShowAllCustomers"/>
@@ -21,7 +22,26 @@
                     <MenuItem Header="Акции по стране" x:Name="OffersByCountry"/>
                 </MenuItem>
             </MenuItem>
+            <MenuItem Header="Добавление">
+                <MenuItem Header="Добавление информации о новых покупателях" x:Name="InsertNewCustomers"/>
+                <MenuItem Header="Добавление новых стран" x:Name="InsertNewCountries"/>
+                <MenuItem Header="Добавление новых городов" x:Name="InsertNewCities"/>
+                <MenuItem Header="Добавление информации о новых разделах" x:Name="InsertNewSections"/>
+                <MenuItem Header="Добавление информации о новых акционных товарах" x:Name="InsertNewSpecialOffers"/>
+            </MenuItem>
+            <MenuItem Header="Изменение">
+                <MenuItem Header="Изменение города" x:Name="UpdateCity"/>
+                <MenuItem Header="Изменение страны" x:Name="UpdateCountry"/>
+                <MenuItem Header="Изменение информации о покупателе" x:Name="UpdateCustomer"/>
+            </MenuItem>
         </Menu>
-        <DataGrid x:Name="dataGrid" Margin="10"/>
+        <DataGrid x:Name="dataGrid" Margin="10" SelectionChanged="DataGrid_SelectionChanged">
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Удалить" Click="DeleteMenuItem_Click"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+        </DataGrid>
+
     </DockPanel>
 </Window>

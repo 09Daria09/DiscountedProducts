@@ -40,7 +40,64 @@ namespace DiscountedProducts
             ShowSpecialOffers.Click += ShowSpecialOffers_Click;
             ShowAllCities.Click += ShowAllCities_Click;
             ShowAllCountries.Click += ShowAllCountries_Click;
+
+            InsertNewCustomers.Click += InsertNewCustomers_Click;
+            InsertNewCountries.Click += InsertNewCountries_Click;
+            InsertNewCities.Click += InsertNewCities_Click;
+            InsertNewSections.Click += InsertNewSections_Click;
+            InsertNewSpecialOffers.Click += InsertNewSpecialOffers_Click;
+
+            UpdateCity.Click += UpdateCity_Click;
+            UpdateCountry.Click += UpdateCountry_Click;
+            UpdateCustomer.Click += UpdateCustomer_Click;
         }
+        private void UpdateCity_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new EditCity(connectionString);
+            win.ShowDialog();
+        }
+
+        private void UpdateCountry_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new EditCountry(connectionString);
+            win.ShowDialog();
+        }
+
+        private void UpdateCustomer_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new EditUser(connectionString);
+            win.ShowDialog();
+        }
+        private void InsertNewCustomers_Click(object sender, RoutedEventArgs e)
+        {
+            var CustWin = new AddCustomersWin(connectionString);
+            CustWin.ShowDialog();
+        }
+
+        private void InsertNewCountries_Click(object sender, RoutedEventArgs e)
+        {
+            var CountryWin = new AddCountries(connectionString);
+            CountryWin.ShowDialog();
+        }
+
+        private void InsertNewCities_Click(object sender, RoutedEventArgs e)
+        {
+            var Win = new AddCityWin(connectionString);
+            Win.ShowDialog();
+        }
+
+        private void InsertNewSections_Click(object sender, RoutedEventArgs e)
+        {
+            var Win = new AddProductInterestsWin(connectionString);
+            Win.ShowDialog();
+        }
+
+        private void InsertNewSpecialOffers_Click(object sender, RoutedEventArgs e)
+        {
+            var Win = new AddSpecialOffersWin(connectionString);
+            Win.ShowDialog();
+        }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             LoadCitiesMenu();
@@ -94,8 +151,6 @@ namespace DiscountedProducts
                 }
             }
         }
-
-
 
         private void SpecialOffersByCountryItem_Click(object sender, RoutedEventArgs e)
         {
@@ -186,11 +241,12 @@ namespace DiscountedProducts
             using (var connection = new SqlConnection(connectionString))
             {
                 var query = @"
-            SELECT up.FullName, up.Email, c.CityName, co.CountryName
+            SELECT up.CustomerID, up.FullName, up.Email, c.CityName, co.CountryName
             FROM UserProfiles up
             JOIN Cities c ON up.CityID = c.CityID
             JOIN Countries co ON c.CountryID = co.CountryID";
                 var userProfiles = connection.Query(query).Select(x => new {
+                    CustomerID = x.CustomerID, 
                     FullName = x.FullName,
                     Email = x.Email,
                     CityName = x.CityName,
@@ -198,6 +254,7 @@ namespace DiscountedProducts
                 }).ToList();
                 dataGrid.ItemsSource = userProfiles;
             }
+            dataGrid.Name = "CustomersDataGrid";
         }
 
 
@@ -216,6 +273,7 @@ namespace DiscountedProducts
                 var productInterests = connection.Query<ProductInterest>("SELECT * FROM ProductInterests").ToList();
                 dataGrid.ItemsSource = productInterests;
             }
+            dataGrid.Name = "SectionsDataGrid";
         }
         private void ShowSpecialOffers_Click(object sender, RoutedEventArgs e)
         {
@@ -238,6 +296,7 @@ namespace DiscountedProducts
 
                 dataGrid.ItemsSource = specialOffers;
             }
+            dataGrid.Name = "SpecialOffersDataGrid";
         }
 
 
@@ -246,16 +305,18 @@ namespace DiscountedProducts
             using (var connection = new SqlConnection(connectionString))
             {
                 var query = @"
-            SELECT c.CityName, cn.CountryName 
+            SELECT c.CityID, c.CityName, cn.CountryName 
             FROM Cities c
             JOIN Countries cn ON c.CountryID = cn.CountryID;";
                 var cities = connection.Query(query).Select(x => new
                 {
+                    CityID = x.CityID,
                     CityName = x.CityName,
                     CountryName = x.CountryName
                 }).ToList();
                 dataGrid.ItemsSource = cities;
             }
+            dataGrid.Name = "CitiesDataGrid";
         }
 
 
@@ -265,8 +326,108 @@ namespace DiscountedProducts
             {
                 var countries = connection.Query<Country>("SELECT * FROM Countries").ToList();
                 dataGrid.ItemsSource = countries;
+                dataGrid.Name = "CountriesDataGrid";
             }
         }
+
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Обработка изменения выбора, если необходимо.
+        }
+
+        private void DeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (dataGrid.SelectedItem == null) return;
+
+            var result = MessageBox.Show("Вы уверены, что хотите удалить этот объект?", "Подтверждение удаления", MessageBoxButton.YesNo);
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    var item = dataGrid.SelectedItem;
+                    DeleteItemFromDatabase(item, dataGrid.Name);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка при удалении объекта: {ex.Message}");
+                }
+            }
+        }
+
+        private void DeleteItemFromDatabase(dynamic item, string dataGridName)
+        {
+            string tableName = "";
+            string primaryKeyColumn = "";
+            object primaryKeyValue = null;
+
+            switch (dataGridName)
+            {
+                case "CustomersDataGrid":
+                    tableName = "UserProfiles";
+                    primaryKeyColumn = "CustomerID";
+                    primaryKeyValue = item.CustomerID;
+                    break;
+                case "CountriesDataGrid":
+                    tableName = "Countries";
+                    primaryKeyColumn = "CountryID";
+                    primaryKeyValue = item.CountryID;
+                    break;
+                case "CitiesDataGrid":
+                    tableName = "Cities";
+                    primaryKeyColumn = "CityID";
+                    primaryKeyValue = item.CityID;
+                    break;
+                case "SectionsDataGrid":
+                    tableName = "ProductInterests";
+                    primaryKeyColumn = "InterestID";
+                    primaryKeyValue = item.InterestID;
+                    break;
+                case "SpecialOffersDataGrid":
+                    tableName = "SpecialOffers";
+                    primaryKeyColumn = "PromotionID";
+                    primaryKeyValue = item.PromotionID;
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(tableName) && primaryKeyValue != null)
+            {
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    var deleteSql = $"DELETE FROM {tableName} WHERE {primaryKeyColumn} = @PrimaryKeyValue";
+                    connection.Execute(deleteSql, new { PrimaryKeyValue = primaryKeyValue });
+                    MessageBox.Show("Запись успешно удалена.");
+                    RefreshDataGrid(dataGridName);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Не удалось определить таблицу или ключ для удаления.");
+            }
+        }
+
+        private void RefreshDataGrid(string dataGridName)
+        {
+            switch (dataGridName)
+            {
+                case "CustomersDataGrid":
+                    ShowAllCustomers_Click(null, null); 
+                    break;
+                case "CountriesDataGrid":
+                    ShowAllCountries_Click(null, null);
+                    break;
+                case "CitiesDataGrid":
+                    ShowAllCities_Click(null, null);
+                    break;
+                case "SectionsDataGrid":
+                    ShowSections_Click(null, null);
+                    break;
+                case "SpecialOffersDataGrid":
+                    ShowSpecialOffers_Click(null, null);
+                    break;
+            }
+        }
+
+
 
     }
 }

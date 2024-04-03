@@ -1,0 +1,21 @@
+﻿<Window x:Class="DiscountedProducts.AddCountries"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DiscountedProducts"
+        mc:Ignorable="d"
+        Title="Добавление страны" Height="200" Width="400">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Label Content="Название страны:" Grid.Row="0"/>
+        <TextBox x:Name="CountryNameBox" Grid.Row="1" Margin="0,0,0,10"/>
+
+        <Button Content="Добавить страну" Grid.Row="2" Click="AddCountry_Click"/>
+    </Grid>
+</Window>

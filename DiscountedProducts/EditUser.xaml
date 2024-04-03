@@ -1,0 +1,35 @@
+﻿<Window x:Class="DiscountedProducts.EditUser"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DiscountedProducts"
+        mc:Ignorable="d"
+        Title="EditUser" Height="450" Width="800">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+
+        <ComboBox x:Name="UserComboBox" DisplayMemberPath="FullName" Grid.Row="0" Margin="0,0,0,10"/>
+
+        <TextBox x:Name="FullNameTextBox" Grid.Row="1" Margin="0,0,0,10" Text="{Binding SelectedItem.FullName, ElementName=UserComboBox}"/>
+
+        <DatePicker x:Name="BirthDatePicker" Grid.Row="2" Margin="0,0,0,10" SelectedDate="{Binding SelectedItem.BirthDate, ElementName=UserComboBox}"/>
+
+        <ComboBox x:Name="GenderComboBox" Grid.Row="3" Margin="0,0,0,10" SelectedValue="{Binding SelectedItem.Gender, ElementName=UserComboBox}">
+        </ComboBox>
+
+        <TextBox x:Name="EmailTextBox" Grid.Row="4" Margin="0,0,0,10" Text="{Binding SelectedItem.Email, ElementName=UserComboBox}"/>
+
+        <ComboBox x:Name="CityComboBox" Grid.Row="5" Margin="0,0,0,10" DisplayMemberPath="CityName" SelectedValuePath="CityID" SelectedValue="{Binding SelectedItem.CityID, ElementName=UserComboBox}"/>
+
+        <Button Content="Сохранить" Grid.Row="6" Click="SaveButton_Click"/>
+    </Grid>
+</Window>
